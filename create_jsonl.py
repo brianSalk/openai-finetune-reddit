@@ -20,7 +20,6 @@ parser.add_argument('-s', '--subreddits', required=True, help='requires a + sepa
 parser.add_argument('--questions-only', action='store_true', help='only scrape prompts that end in a question mark')
 args = parser.parse_args()
 
-# Constants
 PROMPT_END = '\n\n###\n\n'
 COMP_END = '.#,'
 if args.questions_only:
@@ -55,7 +54,7 @@ for sub in args.subreddits.split('+'):
             string = '{' + prompt + completion + '}'
             print(string)
 
-        # Generate JSON string for comments
+        # Generate JSON string for comments if args.comments specified
         if args.comments:
             comment_count = 0
             for comment in submission.comments:
