@@ -54,7 +54,7 @@ for sub in args.subreddits.split('+'):
             string = '{' + prompt + completion + '}'
             print(string)
 
-        # Generate JSON string for comments
+        # Generate JSON string for comments if args.comments specified
         if args.comments:
             comment_count = 0
             for comment in submission.comments:
