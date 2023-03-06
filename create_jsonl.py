@@ -59,7 +59,7 @@ def create():
             if args.comments:
                 comment_count = 0
                 for comment in submission.comments:
-                    if comment_count > args.comments:
+                    if comment_count >= args.comments:
                         break
                     try:
                         selftext = comment.body.strip()
