@@ -12,35 +12,31 @@ reddit = praw.Reddit(
     user_agent=credentials.user_agent
 )
 
-# Set up argparse
-parser = argparse.ArgumentParser()
-parser.add_argument('--prompt-end', default='', help='only use submission titles that end with PROMPT_END')
-parser.add_argument('--comments', type=int, help='use first-level comments as completions')
-parser.add_argument('-s', '--subreddits', required=True, help='requires a + separated list of subreddits')
-parser.add_argument('--questions-only', action='store_true', help='only scrape prompts that end in a question mark')
-args = parser.parse_args()
 
-def create():
+
+def create(subreddits,comments,submission_body,
+        questions_only,min_completion_length,
+        max_completion_length,submissions_per_sub):
     PROMPT_END = '\n\n###\n\n'
     COMP_END = '.#,'
-    if args.questions_only:
+    if questions_only:
         PROMPT_END = '?'
 
+    ans = []
     # Loop through subreddits and submissions
-    for sub in args.subreddits.split('+'):
+    for sub in subreddits.split(' '):
         next_sub = reddit.subreddit(sub)
-        for submission in next_sub.top(limit=1000):
+        for submission in next_sub.top(limit=submissions_per_sub):
             title = submission.title.strip()
             selftext = submission.selftext.strip()
 
             # Skip if title does not end with question mark
-            if args.questions_only and not title.endswith('?'):
+            if questions_only and not title.endswith('?'):
                 continue
 
             # Remove question mark from title
-            if args.questions_only:
+            if questions_only:
                 title = title[:-1]
-
             # Replace special characters
             title = title.replace('"', "'")
             title = title.replace("\\", '')
@@ -49,17 +45,17 @@ def create():
             selftext = selftext.replace("\\", '')
 
             # Generate JSON string
-            if selftext:
+            if selftext and submission_body and \
+                len(selftext) > min_completion_length and len(selftext) < max_completion_length:
                 prompt = f'"prompt": "{title}{PROMPT_END}",'
                 completion = f'"completion": " {selftext}{COMP_END}"'
                 string = '{' + prompt + completion + '}'
-                print(string)
-
-            # Generate JSON string for comments if args.comments specified
-            if args.comments:
+                ans.append(string)
+            # Generate JSON string for comments
+            if comments:
                 comment_count = 0
                 for comment in submission.comments:
-                    if comment_count >= args.comments:
+                    if comment_count >= comments:
                         break
                     try:
                         selftext = comment.body.strip()
@@ -71,7 +67,23 @@ def create():
                     prompt = f'"prompt": "{title}{PROMPT_END}",'
                     completion = f'"completion": " {selftext}{COMP_END}"'
                     string = '{' + prompt + completion + '}'
-                    print(string)
-                    comment_count += 1
+                    if len(selftext) < max_completion_length and \
+                    len(selftext) > min_completion_length:
+                        ans.append(string)
+                        comment_count += 1
+    return "\n".join(ans)
 if __name__ == "__main__":
-    create()
+	# Set up argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--prompt-end', default='', help='only use submission titles that end with PROMPT_END')
+	parser.add_argument('--comments', type=int,default=0, help='use first-level comments as completions')
+	parser.add_argument('-s', '--subreddits', required=True, help='requires a + separated list of subreddits')
+	parser.add_argument('--questions-only', action='store_true', help='only scrape prompts that end in a question mark')
+	parser.add_argument('--submission_body', action='store_true',help='include the submission body as completion')
+	parser.add_argument('--min_completion_length',type=int, help='set mininum length of a completion')
+	parser.add_argument('--max_completion_length',type=int, help='set maximum completion length')
+	parser.add_argument('--submissions_per_sub',type=int,default=1_000, help='number of submissions per subreddit to scrape (depending on which other parameters you select you may get much fewer than the number you enter for this argmuent)')
+	args = parser.parse_args()
+	create(args.subreddits,args.comments,args.submission_body,
+        args.questions_only,args.min_completion_length,
+        args.max_completion_length,args.submissions_per_sub)
