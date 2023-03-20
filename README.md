@@ -16,3 +16,5 @@ usename=<your_reddit_username> # your reddit user name
 password="<your reddit password>" # your reddit password
 user_agent="blahblah/readonlyadfasdf" # set equal to any string, this string should work fine
 ```
+## web version
+I also have created a web version of this program [here](https://github.com/brianSalk/reddit-finetune-frontend).  I am looking to merge these both into one project someday, but the web version is deployed on heroku which complicates things a bit.
