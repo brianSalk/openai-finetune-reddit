@@ -82,9 +82,9 @@ if __name__ == "__main__":
 	parser.add_argument('--submission_body', action='store_true',help='include the submission body as completion')
 	parser.add_argument('--min_completion_length',type=int, help='set mininum length of a completion')
 	parser.add_argument('--max_completion_length',type=int, help='set maximum completion length')
-	parser.add_argument('--submissions_per_sub',type=int,default=1_000, help='number of submissions per subreddit to scrape (depending on which other parameters you select you may get much fewer than the number you enter for this argmuent)')
-    parser.add_argument('--min_rating_for_sub', type=int, default=0,help='minimum number of upvotes for submission to be considered for jsonl')
-    parser.add_argument('--min_rating_for_comment', type=int, default=0, help='min number of upvotes for comment to be considered for jsonl')
+	parser.add_argument('--submissions_per_sub',type=int,default=1_000, help='number of submissions per subreddit to scrape')
+	parser.add_argument('--min_rating_for_sub', type=int, default=0,help='minimum number of upvotes for submission to be considered for jsonl')
+	parser.add_argument('--min_rating_for_comment', type=int, default=0, help='min number of upvotes for comment to be considered for jsonl')
 	args = parser.parse_args()
 	create(args.subreddits,args.comments,args.submission_body,
         args.questions_only,args.min_completion_length,
