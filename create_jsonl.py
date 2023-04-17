@@ -158,7 +158,7 @@ if __name__ == "__main__":
     
     COLOR_RED = "\033[91m" 
     COLOR_RESET = "\033[0m"
-    print(f'{COLOR_RED}please be patient while your JSONL is beijng created {COLOR_RESET}', file=sys.stderr)
+    print(f'{COLOR_RED}please be patient while your JSONL is being created {COLOR_RESET}', file=sys.stderr)
     jsonl = create(subreddits,comments,submission_body,
         questions_only,min_completion_length,
         max_completion_length,submissions_per_sub,
