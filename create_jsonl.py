@@ -88,15 +88,17 @@ def create(subreddits,comments,submission_body,
             if scraped_current == True:
                 sub_count+=1
     return "\n".join(ans)
-def input_with_retry(s, is_valid, err):
+def input_with_retry(prompt_string, is_valid, err):
     while True:
-        ans = input(s).strip()
+        print(prompt_string,end="",file=sys.stderr)
+        ans = input().strip()
         if is_valid(ans):
             return ans
         print(err,file=sys.stderr)
-def input_with_retry_int(s, is_valid, err, default=0):
+def input_with_retry_int(prompt_string, is_valid, err, default=0):
     while True:
-        ans = input(s).strip()
+        print(prompt_string, end="", file=sys.stderr)
+        ans = input().strip()
         if is_valid(ans):
             return int(ans) if ans.strip() != "" else default
         print(err,file=sys.stderr)
