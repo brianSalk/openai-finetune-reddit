@@ -17,7 +17,7 @@ password="<your reddit password>" # your reddit password
 user_agent="blahblah/readonlyadfasdf" # set equal to any string, this string should work fine
 ```
 # Use
-after setup, simply run `python create_jsonl.py`  and you will be prompted further from there.  
+after setup, simply run `python create_jsonl.py > my_finetune.json` to save your JSONL file as my_finetune.jsonl and you will be prompted further from there.  
 I used to have command line flags but that did not scale so well.  Now the script is interactive.  You will be asked a series of quesions in the terminal that will influence how your final JSONL looks.  
 ## web version
 I also have created a web version of this program [here](https://github.com/brianSalk/reddit-finetune-frontend).  I am looking to merge these both into one project someday, but the web version is deployed on heroku which complicates things a bit.
