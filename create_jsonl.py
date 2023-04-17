@@ -156,7 +156,9 @@ if __name__ == "__main__":
     comp_end = input_with_retry(r'completion end [\n\n###\n\n]', lambda x: True,'')
 
     
-     
+    COLOR_RED = "\033[91m" 
+    COLOR_RESET = "\033[0m"
+    print(f'{COLOR_RED}please be patient while your JSONL is beijng created {COLOR_RESET}', file=sys.stderr)
     jsonl = create(subreddits,comments,submission_body,
         questions_only,min_completion_length,
         max_completion_length,submissions_per_sub,
