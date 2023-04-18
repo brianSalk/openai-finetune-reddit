@@ -1,3 +1,0 @@
-[submodule "finetune_submodule"]
-	path = finetune_submodule
-	url = https://github.com/brianSalk/finetune_submodule.git
