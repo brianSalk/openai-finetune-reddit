@@ -12,12 +12,12 @@ reddit = praw.Reddit(
     password=credentials.password,
     user_agent=credentials.user_agent
 )
-
 def create(subreddits,comments,submission_body,
         questions_only,min_completion_length,
         max_completion_length,max_submissions,
         must_contain, min_rating_for_sub, min_rating_for_comment,
-        max_lines,cre_pattern, PROMPT_END=r'\n\n###\n\n',COMP_END="###"):
+        max_lines,cre_pattern, pre_pattern ,PROMPT_END=r'\n\n###\n\n',
+        COMP_END="###"):
     if questions_only:
         PROMPT_END = '?'
     comp_regex = re.compile(cre_pattern) if cre_pattern is not None else None
@@ -36,9 +36,12 @@ def create(subreddits,comments,submission_body,
             if line_count == max_lines:
                 return "\n".join(ans)
             title = submission.title.strip()
+            # skip submission if title does not match regex for prompt
+            if not re.search(pre_pattern, title):
+                continue
             selftext = submission.selftext.strip()
 
-            # Skip if title does not end with question mark
+            # Skip if submission if title does not end with question mark
             if questions_only and not title.endswith('?'):
                 continue
 
@@ -146,6 +149,9 @@ if __name__ == "__main__":
             lambda x: x.isdigit() or x.strip() == '', 
             'please enter a positive integer',
             float('inf'))
+    prompt_regex = input_with_retry('prompt regex [.*]:',
+            lambda x: True,
+            'SHOULD NOT DISPLAY')
     comp_regex = input_with_retry('completion regex [.*]: ',
             lambda x: True,
             'SHOULD NOT DISPLAY')
@@ -163,5 +169,5 @@ if __name__ == "__main__":
         questions_only,min_completion_length,
         max_completion_length,submissions_per_sub,
         "NOT SUPPORTED", min_rating_for_sub, min_rating_for_comment,
-        max_lines, comp_regex, prompt_end, comp_end)
+        max_lines, comp_regex, prompt_regex, prompt_end, comp_end)
     print(jsonl)
